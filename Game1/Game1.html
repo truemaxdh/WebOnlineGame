@@ -1,0 +1,88 @@
+<html>
+<head>
+    <script>
+        let x = 0, y = 0, ID, websocket;
+        const StartNetwork = () => {
+            ID = document.getElementById("ID").value;
+            const IP = document.getElementById("IP").value;
+            console.log(ID + "," + IP);
+
+            websocket = new WebSocket(IP);
+            websocket.onopen = (evt)=>{ onOpen(evt) };
+            websocket.onclose = (evt) => { onClose(evt) };
+            websocket.onmessage = (evt) => { onMessage(evt) };
+            websocket.onerror = (evt) => { onError(evt) };
+
+            sendStatus();
+
+            websocket.send("STARTBROADCAST");
+        }
+
+        const StopNetwork = () => {
+            websocket.send("STOPBROADCAST");
+            websocket.close();
+        }
+
+        const onOpen = (evt) => {
+            //writeToScreen("CONNECTED");
+            //doSend("WebSocket rocks");
+            console.log(evt);
+        }
+
+        const onClose = (evt) => {
+            //writeToScreen("DISCONNECTED");
+            console.log(evt);
+        }
+
+        const onMessage = (evt) => {
+            //writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+            console.log(evt);
+            let msg = evt.data;
+            const prefix = 'STATUS_ALL'
+            if (msg.startsWith(prefix)) {
+                msg = msg.substr(prefix.length + 1);
+                const spl = msg.split(';');
+                let id = '', x = -1, y = -1, idx = 0;
+                spl.forEach((v) => {
+                    const keyVal = v.split('=');
+                    const key = keyVal[0];
+                    const val = keyVal[1];
+                    if (key == 'ID') id = val;
+                    else if (key == 'X') x = parseInt(val);
+                    else if (key == 'Y') y = parseInt(val);
+
+                    if (x >= 0 && y >= 0) {
+                        drawCanvas(idx++, x, y);
+                        x = -1, y = -1;
+                    }
+                });
+            }
+        }
+
+        const drawCanvas = (idx, x, y) => {
+            console.log(idx + "," + x + "," + y);
+        }
+
+        const onError = (evt) => {
+            //writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+            console.log(evt);
+        }
+
+        const sendStatus = () => {
+            let status = "STATUS;ID=" + ID + ";X=" + x + ";Y=" + y;
+            websocket.send(status);
+        }
+    </script>
+</head>
+<body>
+    ID : <input type="text" id="ID" />
+    IP : <input type="text" id="IP" />
+    <button onclick="StartNetwork();">StartNetwork</button>
+    <button onclick="StopNetwork();">StopNetwork</button>
+    <button onclick="Left">Left</button>
+    <button onclick="Up">Up</button>
+    <button onclick="Right">Right</button>
+    <button onclick="Down">Down</button>
+    <canvas id="canv" width="600" height="400"></canvas>
+</body>
+</html>
