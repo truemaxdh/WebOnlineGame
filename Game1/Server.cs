@@ -23,7 +23,7 @@ public enum PayloadDataType
 class Server
 {
     TcpListener tcpListener;
-    List<Connection> connections = new List<Connection>();
+    public List<Connection> connections = new List<Connection>();
     volatile bool bBroadcast = false;
 
     public Server()
@@ -78,23 +78,28 @@ class Server
 
     internal void StartBroadcast()
     {
+        if (bBroadcast) return;
         bBroadcast = true;
-        while (bBroadcast)
-        {
-            string msg = "STATUS_ALL";
-            foreach (Connection conn in connections)
-            {
-                msg += ";ID:" + conn.gamer.ID;
-                msg += ";X:" + conn.gamer.x;
-                msg += ";Y:" + conn.gamer.y;
-            }
-            foreach (Connection conn in connections)
-            {
-                conn.SendData(msg);
-            }
-            Thread.Sleep(50);
-        }
 
+        new Thread(() =>
+        {
+            while (bBroadcast)
+            {
+                string msg = "STATUS_ALL";
+                foreach (Connection conn in connections)
+                {
+                    msg += ";ID:" + conn.gamer.ID;
+                    msg += ";X:" + conn.gamer.x;
+                    msg += ";Y:" + conn.gamer.y;
+                }
+                foreach (Connection conn in connections)
+                {
+                    conn.SendData(msg);
+                }
+                Thread.Sleep(50);
+            }
+        }).Start();
+        
         //foreach (Connection conn in connections)
         //{
         //    conn.SendCloseRequest(1000, "Graceful Close");
@@ -109,13 +114,13 @@ class Server
 
 class Connection
 {
-    public static Server Server0 = null;
+    public static Server? Server0 = null;
 
     public TcpClient client;
     public NetworkStream stream;
     public byte[] bytes;
 
-    public GamerStatus gamer = null;
+    public GamerStatus gamer;
 
     public Connection(TcpClient client)
     {
@@ -352,6 +357,7 @@ class Connection
     {
         client.Close();
         client.Dispose(); //모든 소켓에 관련된 자원 해제
+        Server0.connections.Remove(this);
     }
 }
 
