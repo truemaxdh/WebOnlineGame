@@ -88,15 +88,15 @@ class Server
                 string msg = "STATUS_ALL";
                 foreach (Connection conn in connections)
                 {
-                    msg += ";ID:" + conn.gamer.ID;
-                    msg += ";X:" + conn.gamer.x;
-                    msg += ";Y:" + conn.gamer.y;
+                    msg += ";ID=" + conn.gamer.ID;
+                    msg += ";X=" + conn.gamer.x;
+                    msg += ";Y=" + conn.gamer.y;
                 }
                 foreach (Connection conn in connections)
                 {
                     conn.SendData(msg);
                 }
-                Thread.Sleep(50);
+                Thread.Sleep(200);
             }
         }).Start();
         
@@ -271,7 +271,7 @@ class Connection
             }
             else if (cmd == "STATUS")
             {
-                for (int i = 0; i < spl.Length; ++i)
+                for (int i = 1; i < spl.Length; ++i)
                 {
                     string[] keyVal = spl[i].Split('=');
                     string key = keyVal[0].ToUpper();
@@ -279,6 +279,7 @@ class Connection
                     if (key == "ID")
                     {
                         gamer.ID = val;
+                        Console.WriteLine("gamer.ID=" + gamer.ID);
                     }
                     else if (key == "X")
                     {
