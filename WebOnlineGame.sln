@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketC#", "WebSocketC#\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample1", "Sample1\Sample1.csproj", "{713AB32F-AE94-4EE0-AD9E-C6E5232A0D25}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CopterShowdown", "CopterShowdown\CopterShowdown.csproj", "{9FD50062-AAC3-4EBD-9970-0232B8686FC4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "docs", "docs\docs.shproj", "{F4C3CE15-0991-4D68-A98F-85E35F3329E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,11 +25,18 @@ Global
 		{713AB32F-AE94-4EE0-AD9E-C6E5232A0D25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{713AB32F-AE94-4EE0-AD9E-C6E5232A0D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{713AB32F-AE94-4EE0-AD9E-C6E5232A0D25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FD50062-AAC3-4EBD-9970-0232B8686FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FD50062-AAC3-4EBD-9970-0232B8686FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FD50062-AAC3-4EBD-9970-0232B8686FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FD50062-AAC3-4EBD-9970-0232B8686FC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A9CDBDF7-3805-40D9-8399-5F67332E3BF2}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		docs\docs.projitems*{f4c3ce15-0991-4d68-a98f-85e35f3329e6}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
