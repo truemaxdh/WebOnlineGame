@@ -22,6 +22,7 @@ public enum PayloadDataType
 
 class Server
 {
+    HttpListener httpListener;
     TcpListener tcpListener;
     public List<Connection> connections = new List<Connection>();
     volatile bool bBroadcast = false;
@@ -31,11 +32,16 @@ class Server
         Connection.Server0 = this;
 
         string ip = GetLocalIP();
-        int port = 80;
-        tcpListener = new TcpListener(IPAddress.Parse(ip), port);
+        int httpPort = 80;
+        int tcpPort = 8080;
+        httpListener = new HttpListener();
+        httpListener.Prefixes.Add(string.Format("{0}:{1}", ip, httpPort));
+        httpListener.Start();
+
+        tcpListener = new TcpListener(IPAddress.Parse(ip), tcpPort);
         tcpListener.Start();
 
-        Console.WriteLine("Server has started on {0}:{1}, Waiting for a connection...", ip, port);
+        Console.WriteLine("Server has started on {0}:{1}, Waiting for a connection...", ip, tcpPort);
 
         tcpListener.BeginAcceptTcpClient(OnClientConnect, null);
     }
@@ -65,7 +71,7 @@ class Server
 
         Connection con = new Connection(tcpListener.EndAcceptTcpClient(ar));
         connections.Add(con);
-                
+
         tcpListener.BeginAcceptTcpClient(OnClientConnect, null);
 
     }
@@ -99,7 +105,7 @@ class Server
                 Thread.Sleep(200);
             }
         }).Start();
-        
+
         //foreach (Connection conn in connections)
         //{
         //    conn.SendCloseRequest(1000, "Graceful Close");
@@ -288,7 +294,8 @@ class Connection
                     else if (key == "Y")
                     {
                         gamer.y = int.Parse(val);
-                    } else throw new Exception("key invalid");
+                    }
+                    else throw new Exception("key invalid");
                 }
             }
             else throw new Exception("cmd invalid");
@@ -300,10 +307,10 @@ class Connection
         }
     }
 
-        public void SendData(string msg)
-        {
-            SendData(Encoding.UTF8.GetBytes(msg), PayloadDataType.Text);
-        }
+    public void SendData(string msg)
+    {
+        SendData(Encoding.UTF8.GetBytes(msg), PayloadDataType.Text);
+    }
 
     public void SendData(byte[] data, PayloadDataType opcode)
     {
@@ -341,7 +348,7 @@ class Connection
 
         stream.Write(sendData, 0, sendData.Length);  //클라이언트에 전송
     }
-    
+
     public void SendCloseRequest(ushort code, string reason)
     {
         byte[] closeReq = new byte[2 + reason.Length];
