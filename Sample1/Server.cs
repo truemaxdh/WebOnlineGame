@@ -8,6 +8,7 @@ using System.Reflection.Emit;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Collections;
 using System.Reflection.Metadata;
+using System.Security.Cryptography.X509Certificates;
 
 public enum PayloadDataType
 {
@@ -20,9 +21,58 @@ public enum PayloadDataType
     Pong = 10
 }
 
+class HttpServer
+{
+    Server? server0;
+    HttpListener listener;
+    int httpPort = 80;
+    public volatile bool bListen = true;
+
+    public HttpServer(Server server, string ip)
+    {
+        this.server0 = server;
+        listener = new HttpListener();
+        listener.Prefixes.Add(string.Format("{0}:{1}", ip, httpPort));
+        listener.Start();
+
+        new Thread(() =>
+        {
+            while (bListen)
+            {
+                // Note: The GetContext method blocks while waiting for a request. 
+                HttpListenerContext context = listener.GetContext();
+                HttpListenerRequest request = context.Request;
+
+                // Obtain a response object.
+                HttpListenerResponse response = context.Response;
+                string responseString = "";
+                string? rawUrl = request.RawUrl;
+                if (rawUrl == null)
+                {
+                    responseString = "index.html";
+                }
+                else if (rawUrl == "stopServer")
+                {
+                    bListen = false;
+                    responseString = "HttpServer Stopped";
+                }
+
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                // Get a response stream and write the response to it.
+                response.ContentLength64 = buffer.Length;
+                System.IO.Stream output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                // You must close the output stream.
+                output.Close();
+            }
+            listener.Stop();
+        }).Start();
+    }
+}
+
 class Server
 {
-    HttpListener httpListener;
+    
     TcpListener tcpListener;
     public List<Connection> connections = new List<Connection>();
     volatile bool bBroadcast = false;
@@ -32,11 +82,8 @@ class Server
         Connection.Server0 = this;
 
         string ip = GetLocalIP();
-        int httpPort = 80;
-        int tcpPort = 8080;
-        httpListener = new HttpListener();
-        httpListener.Prefixes.Add(string.Format("{0}:{1}", ip, httpPort));
-        httpListener.Start();
+        
+        int tcpPort = 8080;        
 
         tcpListener = new TcpListener(IPAddress.Parse(ip), tcpPort);
         tcpListener.Start();
