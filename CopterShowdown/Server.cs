@@ -8,39 +8,22 @@ using System.Reflection.Emit;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Collections;
 using System.Reflection.Metadata;
-
-public enum PayloadDataType
-{
-    Unknown = -1,
-    Continuation = 0,
-    Text = 1,
-    Binary = 2,
-    ConnectionClose = 8,
-    Ping = 9,
-    Pong = 10
-}
+using System.Security.Cryptography.X509Certificates;
 
 class Server
 {
-    TcpListener tcpListener;
-    public List<Connection> connections = new List<Connection>();
-    volatile bool bBroadcast = false;
-
-    public Server()
+    const int httpPort = 80;
+    const int tcpPort = 8080;
+    public static void Main()
     {
-        Connection.Server0 = this;
-
         string ip = GetLocalIP();
-        int port = 80;
-        tcpListener = new TcpListener(IPAddress.Parse(ip), port);
-        tcpListener.Start();
 
-        Console.WriteLine("Server has started on {0}:{1}, Waiting for a connection...", ip, port);
-
-        tcpListener.BeginAcceptTcpClient(OnClientConnect, null);
+        new HttpServer(new TcpServer(ip, tcpPort), ip, httpPort);
+        //new HttpServer(null, ip);
+        Console.ReadLine();
     }
 
-    public string GetLocalIP()
+    public static string GetLocalIP()
     {
         string result = string.Empty;
 
@@ -59,6 +42,87 @@ class Server
         return result;
     }
 
+}
+
+class HttpServer
+{
+    TcpServer? tcpServer;
+    HttpListener listener;
+
+    public volatile bool bListen = true;
+
+    public HttpServer(TcpServer server, string ip, int httpPort)
+    {
+        this.tcpServer = server;
+        listener = new HttpListener();
+        string siteUrl = string.Format("http://{0}:{1}/", ip, httpPort);
+        listener.Prefixes.Add(siteUrl);
+        Console.WriteLine(siteUrl);
+        //listener.Prefixes.Add(string.Format("https://{0}:{1}/", ip, httpPort));
+        listener.Start();
+
+        new Thread(() =>
+        {
+            while (bListen)
+            {
+                // Note: The GetContext method blocks while waiting for a request. 
+                HttpListenerContext context = listener.GetContext();
+                HttpListenerRequest request = context.Request;
+                Console.WriteLine(request.Url);
+
+                // Obtain a response object.
+                HttpListenerResponse response = context.Response;
+                string strResponse = "";
+                string? rawUrl = request.RawUrl;
+                if (rawUrl == "/stopServer")
+                {
+                    bListen = false;
+                    strResponse = "HttpServer Stopped";
+                }
+                else
+                {
+                    if (rawUrl == "/") rawUrl += "CopterShowdown.html";
+                    strResponse = File.ReadAllText("./html" + rawUrl);
+                    strResponse = strResponse.Replace("[[[ip]]]", "ws://" + ip + ":" + tcpServer.tcpPort);
+                }
+
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(strResponse);
+                // Get a response stream and write the response to it.
+                response.ContentLength64 = buffer.Length;
+                System.IO.Stream output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                // You must close the output stream.
+                output.Close();
+            }
+            Thread.Sleep(200);
+            listener.Stop();
+            tcpServer.StopBroadcast();
+        }).Start();
+    }
+}
+
+class TcpServer
+{
+    TcpListener tcpListener;
+    public int tcpPort;
+    public List<Connection> connections = new List<Connection>();
+    volatile bool bBroadcast = false;
+
+    public TcpServer(string ip, int tcpPort)
+    {
+        Connection.tcpServer = this;
+
+        this.tcpPort = tcpPort;
+
+        tcpListener = new TcpListener(IPAddress.Parse(ip), tcpPort);
+        tcpListener.Start();
+
+        Console.WriteLine("Server has started on {0}:{1}, Waiting for a connection...", ip, tcpPort);
+
+        tcpListener.BeginAcceptTcpClient(OnClientConnect, null);
+    }
+
+
     private void OnClientConnect(IAsyncResult ar)
     {
         Console.WriteLine("A client connected");
@@ -68,12 +132,6 @@ class Server
 
         tcpListener.BeginAcceptTcpClient(OnClientConnect, null);
 
-    }
-
-    public static void Main()
-    {
-        new Server();
-        Console.ReadLine();
     }
 
     internal void StartBroadcast()
@@ -114,7 +172,7 @@ class Server
 
 class Connection
 {
-    public static Server? Server0 = null;
+    public static TcpServer? tcpServer = null;
 
     public TcpClient client;
     public NetworkStream stream;
@@ -263,11 +321,11 @@ class Connection
             string cmd = spl[0].ToUpper();
             if (cmd == "STARTBROADCAST")
             {
-                Server0.StartBroadcast();
+                tcpServer.StartBroadcast();
             }
             else if (cmd == "STOPBROADCAST")
             {
-                Server0.StopBroadcast();
+                tcpServer.StopBroadcast();
             }
             else if (cmd == "STATUS")
             {
@@ -359,7 +417,7 @@ class Connection
     {
         client.Close();
         client.Dispose(); //모든 소켓에 관련된 자원 해제
-        Server0.connections.Remove(this);
+        tcpServer.connections.Remove(this);
     }
 }
 
@@ -368,4 +426,15 @@ class GamerStatus
     public int x = 0;
     public int y = 0;
     public string ID = "";
+}
+
+public enum PayloadDataType
+{
+    Unknown = -1,
+    Continuation = 0,
+    Text = 1,
+    Binary = 2,
+    ConnectionClose = 8,
+    Ping = 9,
+    Pong = 10
 }
