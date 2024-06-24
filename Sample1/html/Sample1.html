@@ -3,7 +3,7 @@
     <script>
         let x = 0, y = 0, ID, websocket;
         const Connect = () => {
-            const IP = document.getElementById("IP").value;
+            const IP = '[[[ip]]]';
             console.log(ID + "," + IP);
 
             websocket = new WebSocket(IP);
@@ -116,7 +116,7 @@
 </head>
 <body>
     ID : <input type="text" id="ID" />
-    IP : <input type="text" id="IP" />
+    IP : [[[ip]]]
     <button onclick="Connect();">Connect</button>
     <button onclick="sendStatus();">sendStatus</button>
     <button onclick="StartBroadcast();">StartBroadcast</button>
