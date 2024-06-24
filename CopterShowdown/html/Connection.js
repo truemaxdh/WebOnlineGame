@@ -21,7 +21,9 @@ const StopBroadcast = () => {
 
 const onOpen = (evt) => {
     console.log(evt);
-    websocket.send("STARTBROADCAST");
+    StartGame();
+    sendStatus();
+    StartBroadcast();
 }
 
 const onClose = (evt) => {

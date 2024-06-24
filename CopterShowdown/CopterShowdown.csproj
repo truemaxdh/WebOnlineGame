@@ -14,9 +14,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="html\CopterShowdown.html" />
-    <Content Include="html\pause.png" />
-    <Content Include="html\undo.png" />
+    <Content Include="html\CopterShowdown.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="html\pause.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="html\undo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="html\Connection.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
