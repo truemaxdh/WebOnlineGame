@@ -33,7 +33,7 @@
         <h1>Copter Showdown</h1>
 
         ID : <input type="text" id="ID" />
-        IP : <input type="text" id="IP" />
+        IP : [[[ip]]]
 
         <button onclick="Connect();">Connect</button>
         <button onclick="StartGame();">StartGame</button>
@@ -43,6 +43,7 @@
             Score : <div id="score_num" style="display:inline-block;">0</div>
             <img src="undo.png" style="float:right;" onclick="EndGame();">
         </div>
+        <canvas id="canv" width="600" height="400"></canvas>
     </div>
 </body>
 </html>
