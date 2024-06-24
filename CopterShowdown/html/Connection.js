@@ -1,6 +1,6 @@
-let x = 0, y = 0, ID, websocket;
+let x = 50, y = 50, ID, websocket;
 const Connect = () => {
-    const IP = document.getElementById("IP").value;
+    const IP = '[[[ip]]]';
     console.log(ID + "," + IP);
 
     websocket = new WebSocket(IP);
@@ -20,18 +20,15 @@ const StopBroadcast = () => {
 }
 
 const onOpen = (evt) => {
-    //writeToScreen("CONNECTED");
-    //doSend("WebSocket rocks");
     console.log(evt);
+    websocket.send("STARTBROADCAST");
 }
 
 const onClose = (evt) => {
-    //writeToScreen("DISCONNECTED");
     console.log(evt);
 }
 
 const onMessage = (evt) => {
-    //writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
     console.log(evt);
     let msg = evt.data;
     const prefix = 'STATUS_ALL'
@@ -57,7 +54,6 @@ const onMessage = (evt) => {
 }
 
 const onError = (evt) => {
-    //writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
     console.log(evt);
 }
 
