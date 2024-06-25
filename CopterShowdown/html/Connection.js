@@ -38,20 +38,22 @@ const onMessage = (evt) => {
         clearCanvas();
         msg = msg.substr(prefix.length + 1);
         const spl = msg.split(';');
-        let id = '', x = -1, y = -1;
+        let pid = '', px = -1, py = -1;
         spl.forEach((v) => {
             const keyVal = v.split('=');
             const key = keyVal[0];
             const val = keyVal[1];
-            if (key == 'ID') id = val;
-            else if (key == 'X') x = parseInt(val);
-            else if (key == 'Y') y = parseInt(val);
+            if (key == 'ID') pid = val;
+            else if (key == 'X') px = parseInt(val);
+            else if (key == 'Y') py = parseInt(val);
 
-            if (x >= 0 && y >= 0) {
-                drawCanvas(id, x, y);
-                x = -1, y = -1;
+            if (px >= 0 && py >= 0) {
+                drawCanvas(pid, px, py);
+                px = -1, py = -1;
             }
         });
+
+        procUserInput();
     }
 }
 
