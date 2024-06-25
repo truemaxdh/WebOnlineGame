@@ -1,3 +1,18 @@
+
+const StartGame = () => {
+    pageChange('game');
+    rendererInit()
+    addEvt();
+    sendStatus();
+    StartBroadcast();
+}
+
+const EndGame = () => {
+    removeEvt();
+    StopBroadcast();
+    pageChange('intro');
+}
+
 function procUserInput() {
     if (!keyPressed) procTouchEvent();
     if (keyCode != '') {
@@ -8,16 +23,16 @@ function procUserInput() {
 
 function procKeyEvent() {
     switch (keyCode) {
-        case 'left':
+        case 'ArrowLeft':
             x--;
             break;
-        case 'right':
+        case 'ArrowRight':
             x++;
             break;
-        case 'down':
+        case 'ArrowDown':
             y++;
             break;
-        case 'up':
+        case 'ArrowUp':
             y--;
             break;
     }
@@ -30,10 +45,10 @@ function procTouchEvent() {
     if (user_pressing) {
         var dx = user_x - user_x_ori;
         var dy = user_y - user_y_ori;
-
-        if (dy > BLOCK_WH) keyCode = 'down';
-        else if (dy < -BLOCK_WH) keyCode = 'up';
-        else if (dx > BLOCK_WH) keyCode = 'right';
-        else if (dx < -BLOCK_WH) keyCode = 'left';
+        console.log(dx + ',' + dy);
+        if (dy > BLOCK_WH) keyCode = 'ArrowDown';
+        else if (dy < -BLOCK_WH) keyCode = 'ArrowUp';
+        else if (dx > BLOCK_WH) keyCode = 'ArrowRight';
+        else if (dx < -BLOCK_WH) keyCode = 'ArrowLeft';
     }
 }

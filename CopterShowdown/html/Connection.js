@@ -22,8 +22,7 @@ const StopBroadcast = () => {
 const onOpen = (evt) => {
     console.log(evt);
     StartGame();
-    sendStatus();
-    StartBroadcast();
+    
 }
 
 const onClose = (evt) => {
@@ -31,7 +30,7 @@ const onClose = (evt) => {
 }
 
 const onMessage = (evt) => {
-    console.log(evt);
+    //console.log(evt);
     let msg = evt.data;
     const prefix = 'STATUS_ALL'
     if (msg.startsWith(prefix)) {
@@ -61,28 +60,6 @@ const onError = (evt) => {
     console.log(evt);
 }
 
-let ctx;
-const clearCanvas = () => {
-    if (typeof ctx == 'undefined') {
-        const canv = document.getElementById('canv');
-        ctx = canv.getContext('2d');
-    }
-    ctx.fillStyle = 'DarkGray';
-    ctx.fillRect(0, 0, 600, 400);
-}
-
-const drawCanvas = (id, x, y) => {
-    if (typeof ctx == 'undefined') {
-        const canv = document.getElementById('canv');
-        ctx = canv.getContext('2d');
-    }
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
-    ctx.font = '10px bold Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText(id, x, y);
-    console.log(id + "," + x + "," + y);
-}
 
 const sendStatus = () => {
     if (typeof ID == 'undefined') ID = document.getElementById("ID").value;

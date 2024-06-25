@@ -3,23 +3,14 @@ var keyCode;
 var user_x_ori, user_y_ori;
 var user_x, user_y;
 var user_pressing = false;
-var do_rotate = false;
 var keyPressed = false;
 function addEvt() {
-    document.body.onkeydown = function( e ) {
-        var keys = {
-            37: 'left',
-            39: 'right',
-            40: 'down',
-            38: 'up'
-        };
-        if ( typeof keys[ e.code ] != 'undefined' ) {
-            //keyPress( keys[ e.keyCode ] );
-            keyCode=keys[ e.code ];
-            //render();
-            keyPressed = true;
-            return false;
-        }
+    document.body.onkeydown = function (e) {
+        console.log(e);
+
+        keyCode = e.code;
+        keyPressed = true;
+        return false;
     };
 
     document.body.onkeyup = function( e ) {
@@ -28,16 +19,16 @@ function addEvt() {
         return false;
     }
 
-    var scale_fx = canvas.width / canvas.clientWidth;
-    var scale_fy = canvas.height / canvas.clientHeight;
+    var scale_fx = canv.width / canv.clientWidth;
+    var scale_fy = canv.height / canv.clientHeight;
+    console.log(scale_fx + ',' + scale_fx);
     document.body.onmousedown = function (e) {
         user_x = e.clientX  * scale_fx;
         user_y = e.clientY * scale_fy;
         user_x_ori = user_x;
         user_y_ori = user_y;
-        
+        console.log(user_x + ',' + user_y);
         user_pressing = true;
-        do_rotate = true;
         return false;
     }
 
@@ -59,7 +50,6 @@ function addEvt() {
         user_y_ori = user_y;
                 
         user_pressing = true;
-        do_rotate = true;
         return false;
     }
 
