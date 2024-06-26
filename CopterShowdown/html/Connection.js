@@ -34,25 +34,9 @@ const onMessage = (evt) => {
     let msg = evt.data;
     const prefix = 'STATUS_ALL'
     if (msg.startsWith(prefix)) {
-        clearCanvas();
         msg = msg.substr(prefix.length + 1);
-        const spl = msg.split(';');
-        let pid = '', px = -1, py = -1;
-        spl.forEach((v) => {
-            const keyVal = v.split('=');
-            const key = keyVal[0];
-            const val = keyVal[1];
-            if (key == 'ID') pid = val;
-            else if (key == 'X') px = parseInt(val);
-            else if (key == 'Y') py = parseInt(val);
 
-            if (px >= 0 && py >= 0) {
-                drawCanvas(pid, px, py);
-                px = -1, py = -1;
-            }
-        });
-
-        procUserInput();
+        tick(msg);
     }
 }
 
