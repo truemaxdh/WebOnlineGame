@@ -1,8 +1,12 @@
+let map;
+//let copter;
 
 const StartGame = () => {
     pageChange('game');
     rendererInit()
     addEvt();
+    map = new objMap(1000);
+    //copter = new objCopter(map);
     sendStatus();
     StartBroadcast();
 }
@@ -13,7 +17,30 @@ const EndGame = () => {
     pageChange('intro');
 }
 
-function procUserInput() {
+function tick(msg) {
+    map.render(ctx);
+    const spl = msg.split(';');
+    let pid = '', px = -1, py = -1;
+    spl.forEach((v) => {
+        const keyVal = v.split('=');
+        const key = keyVal[0];
+        const val = keyVal[1];
+        if (key == 'ID') pid = val;
+        else if (key == 'X') px = parseInt(val);
+        else if (key == 'Y') py = parseInt(val);
+
+        if (px >= 0 && py >= 0) {
+            //drawCanvas(pid, px, py);
+            const pCopter = new objCopter(map, px, py);
+            pCopter.render(ctx);
+            if (pid == ID) {
+                map.move(pCopter);
+            }
+            px = -1, py = -1;
+        }
+    });
+
+
     if (!keyPressed) procTouchEvent();
     if (keyCode != '') {
         procKeyEvent();
