@@ -84,9 +84,11 @@ class objCopter extends gameobj {
     }
     
     render(ctx, mainObj) {
-        const dCenter = this.center.clone().subtract(mainObj);
+        const dCenter = this.center.clone().subtract(mainObj.center);
         const half_w = ctx.canvas.width / 2 + dCenter.v1;
         const half_h = ctx.canvas.height / 2 + dCenter.v2;
+        //const half_w = ctx.canvas.width / 2;
+        //const half_h = ctx.canvas.height / 2;
         ctx.save();
         ctx.globalAlpha = 0.9;
         ctx.translate(half_w, half_h);

@@ -154,7 +154,7 @@ class TcpServer
                 {
                     conn.SendData(msg);
                 }
-                Thread.Sleep(1500);
+                Thread.Sleep(100);
             }
         }).Start();
 
@@ -399,8 +399,11 @@ class Connection
             Array.Copy(lengthData, 0, sendData, 2, 2);
             data.CopyTo(sendData, 4);
         }
-
-        stream.Write(sendData, 0, sendData.Length);  //클라이언트에 전송
+        try
+        {
+            stream.Write(sendData, 0, sendData.Length);  //클라이언트에 전송
+        }
+        catch (Exception ex) { }
     }
 
     public void SendCloseRequest(ushort code, string reason)

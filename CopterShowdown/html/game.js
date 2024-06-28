@@ -1,16 +1,8 @@
-let map;
-//let copter;
-
-//let copter;
-
 const StartGame = () => {
     pageChange('game');
     renderer.init(document.getElementById('canv_container'));
     addEvt();
-    map = new objMap(1000);
-    //copter = new objCopter(map);
     sendStatus();
-    //StartBroadcast();
 }
 
 const EndGame = () => {
