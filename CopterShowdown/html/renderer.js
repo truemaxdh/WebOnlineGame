@@ -1,20 +1,21 @@
-let canv;
+let renderer = {
+    canv: null,
+    ctx: null,
+    map: null,
+    
+    init: function(container) {
+        this.canv = document.getElementById('canv');
+        this.ctx = this.canv.getContext('2d');
+        
+        let positionInfo = container.getBoundingClientRect();
+        this.canv.width = positionInfo.width
+        this.canv.height = positionInfo.height;
 
-let ctx;
-const clearCanvas = () => {
-    ctx.fillStyle = 'DarkGray';
-    ctx.fillRect(0, 0, 600, 400);
-}
-
-const drawCanvas = (id, x, y) => {
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
-    ctx.font = '10px bold Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText(id, x, y);
-    console.log(id + "," + x + "," + y);
-}
-function rendererInit() {
-    canv = document.getElementById('canv');
-    ctx = canv.getContext('2d');
-}
+        this.map = new objMap(1000);
+    },
+    render: function (objChain, mainObj) {
+        this.map.move(mainObj);
+        this.map.render(this.ctx);
+        objChain.render(this.ctx, mainObj);
+    }
+};

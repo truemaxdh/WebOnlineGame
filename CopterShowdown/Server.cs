@@ -154,7 +154,7 @@ class TcpServer
                 {
                     conn.SendData(msg);
                 }
-                Thread.Sleep(200);
+                Thread.Sleep(1500);
             }
         }).Start();
 
@@ -319,14 +319,15 @@ class Connection
         {
             string[] spl = msg.Split(';');
             string cmd = spl[0].ToUpper();
-            if (cmd == "STARTBROADCAST")
-            {
-                tcpServer.StartBroadcast();
-            }
-            else if (cmd == "STOPBROADCAST")
+            Console.WriteLine($"{cmd}");
+            if (cmd == "STOPBROADCAST")
             {
                 tcpServer.StopBroadcast();
             }
+            //else if (cmd == "STARTBROADCAST")
+            //{
+            //    tcpServer.StartBroadcast();
+            //}            
             else if (cmd == "STATUS")
             {
                 for (int i = 1; i < spl.Length; ++i)
@@ -349,6 +350,7 @@ class Connection
                     }
                     else throw new Exception("key invalid");
                 }
+                tcpServer.StartBroadcast();
             }
             else throw new Exception("cmd invalid");
             SendData("SUCCESS");

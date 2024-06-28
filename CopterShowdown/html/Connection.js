@@ -1,4 +1,4 @@
-let x = 50, y = 50, ID, websocket;
+let x = 150, y = 150, ID, websocket;
 const Connect = () => {
     const IP = '[[[ip]]]';
     console.log(ID + "," + IP);
@@ -10,9 +10,10 @@ const Connect = () => {
     websocket.onerror = (evt) => { onError(evt) };
 }
 
-const StartBroadcast = () => {
-    websocket.send("STARTBROADCAST");
-}
+//const StartBroadcast = () => {
+//    console.log('StartBroadcast');
+//    websocket.send("STARTBROADCAST");
+//}
 
 const StopBroadcast = () => {
     websocket.send("STOPBROADCAST");
@@ -34,25 +35,9 @@ const onMessage = (evt) => {
     let msg = evt.data;
     const prefix = 'STATUS_ALL'
     if (msg.startsWith(prefix)) {
-        clearCanvas();
         msg = msg.substr(prefix.length + 1);
-        const spl = msg.split(';');
-        let pid = '', px = -1, py = -1;
-        spl.forEach((v) => {
-            const keyVal = v.split('=');
-            const key = keyVal[0];
-            const val = keyVal[1];
-            if (key == 'ID') pid = val;
-            else if (key == 'X') px = parseInt(val);
-            else if (key == 'Y') py = parseInt(val);
 
-            if (px >= 0 && py >= 0) {
-                drawCanvas(pid, px, py);
-                px = -1, py = -1;
-            }
-        });
-
-        procUserInput();
+        tick(msg);
     }
 }
 

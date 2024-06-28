@@ -1,10 +1,12 @@
 
+//let copter;
+
 const StartGame = () => {
     pageChange('game');
-    rendererInit()
+    renderer.init(document.getElementById('canv_container'));
     addEvt();
     sendStatus();
-    StartBroadcast();
+    //StartBroadcast();
 }
 
 const EndGame = () => {
@@ -13,15 +15,46 @@ const EndGame = () => {
     pageChange('intro');
 }
 
-function procUserInput() {
+function tick(msg) {
+    console.log(msg);
+    const spl = msg.split(';');
+    let pid = '', px = -1, py = -1;
+    let objChain = new gameobj();
+    let curObj = objChain;
+    let mainObj;
+    spl.forEach((v) => {
+        const keyVal = v.split('=');
+        const key = keyVal[0];
+        const val = keyVal[1];
+        if (key == 'ID') pid = val;
+        else if (key == 'X') px = parseInt(val);
+        else if (key == 'Y') py = parseInt(val);
+
+        if (px >= 0 && py >= 0) {
+            const pCopter = new objCopter(px, py);
+            if (pid == ID) {
+                mainObj = pCopter;
+            }
+            curObj.next = pCopter;
+            curObj = pCopter;
+
+            pid = '', px = -1, py = -1;
+        }
+    });
+    console.log('render');
+    renderer.render(objChain, mainObj);
+    console.log('procTouchEvent');
     if (!keyPressed) procTouchEvent();
+    console.log('procKeyEvent');
     if (keyCode != '') {
         procKeyEvent();
+        console.log('sendStatus');
         sendStatus();
     }
 }
 
 function procKeyEvent() {
+    console.log(keyCode);
     switch (keyCode) {
         case 'ArrowLeft':
             x--;

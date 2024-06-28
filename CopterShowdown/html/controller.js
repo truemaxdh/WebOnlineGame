@@ -1,4 +1,4 @@
-var keyCode;
+var keyCode = '';
 
 var user_x_ori, user_y_ori;
 var user_x, user_y;
@@ -21,7 +21,7 @@ function addEvt() {
 
     var scale_fx = canv.width / canv.clientWidth;
     var scale_fy = canv.height / canv.clientHeight;
-    console.log(scale_fx + ',' + scale_fx);
+    //console.log(scale_fx + ',' + scale_fx);
     document.body.onmousedown = function (e) {
         user_x = e.clientX  * scale_fx;
         user_y = e.clientY * scale_fy;
