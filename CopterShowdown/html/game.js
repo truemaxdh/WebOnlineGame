@@ -1,8 +1,28 @@
+let posDir = {
+    ID: null,
+    x: 0,
+    y: 0,
+    dir: null,
+    propellerRot: 0,
+    init: function () {
+        this.ID = document.getElementById("ID").value;
+        this.x = Math.floor(renderer.mapSize * Math.random());
+        this.y = Math.floor( renderer.mapSize * Math.random());
+        this.dir = 'ArrowRight';
+    },
+    getSendStatus: function () {
+        return "STATUS;ID=" + this.ID + ";X=" + this.x + ";Y=" + this.y + ";DIR=" + posDir.dir;
+    }
+}
+
 const StartGame = () => {
     pageChange('game');
     renderer.init(document.getElementById('canv_container'));
+    posDir.init();
     addEvt();
+    console.log('sendStatus');
     sendStatus();
+    console.log('sendStatus end');
 }
 
 const EndGame = () => {
@@ -12,9 +32,9 @@ const EndGame = () => {
 }
 
 function tick(msg) {
-    console.log(msg);
+    //console.log(msg);
     const spl = msg.split(';');
-    let pid = '', px = -1, py = -1;
+    let pid = null, px = -1, py = -1, pdir = null;
     let objChain = new gameobj();
     let curObj = objChain;
     let mainObj;
@@ -25,10 +45,15 @@ function tick(msg) {
         if (key == 'ID') pid = val;
         else if (key == 'X') px = parseInt(val);
         else if (key == 'Y') py = parseInt(val);
+        else if (key == 'DIR') {
+            pdir = val;
 
-        if (px >= 0 && py >= 0) {
             const pCopter = new objCopter(px, py);
-            if (pid == ID) {
+            if (pdir == 'ArrowDown') pCopter.rotate = Math.PI / 2;
+            if (pdir == 'ArrowLeft') pCopter.rotate = Math.PI;
+            if (pdir == 'ArrowUp') pCopter.rotate = Math.PI * 3 / 2;
+            pCopter.propellerRot = posDir.propellerRot;
+            if (pid == posDir.ID) {
                 mainObj = pCopter;
             }
             curObj.next = pCopter;
@@ -37,34 +62,38 @@ function tick(msg) {
             pid = '', px = -1, py = -1;
         }
     });
-    console.log('render');
+
     renderer.render(objChain, mainObj);
-    console.log('procTouchEvent');
     if (!keyPressed) procTouchEvent();
-    console.log('procKeyEvent');
     if (keyCode != '') {
         procKeyEvent();
-        console.log('sendStatus');
         sendStatus();
     }
+
+    posDir.propellerRot += Math.PI / 6;
+    posDir.propellerRot %= Math.PI * 2;
 }
 
 function procKeyEvent() {
     console.log(keyCode);
     switch (keyCode) {
         case 'ArrowLeft':
-            x--;
+            posDir.x -= 2;
             break;
         case 'ArrowRight':
-            x++;
+            posDir.x += 2;
             break;
         case 'ArrowDown':
-            y++;
+            posDir.y += 2;
             break;
         case 'ArrowUp':
-            y--;
+            posDir.y -= 2;
+            break;
+        default:
+            keyCode = posDir.dir;
             break;
     }
+    posDir.dir = keyCode;
 }
 
 const BLOCK_WH = 3;
@@ -75,6 +104,10 @@ function procTouchEvent() {
         var dx = user_x - user_x_ori;
         var dy = user_y - user_y_ori;
         console.log(dx + ',' + dy);
+        if (Math.abs(dx) <= BLOCK_WH && Math.abs(dy) <= BLOCK_WH) return;
+        if (Math.abs(dx) >= Math.abs(dy)) dy = 0;
+        else dx = 0;
+
         if (dy > BLOCK_WH) keyCode = 'ArrowDown';
         else if (dy < -BLOCK_WH) keyCode = 'ArrowUp';
         else if (dx > BLOCK_WH) keyCode = 'ArrowRight';

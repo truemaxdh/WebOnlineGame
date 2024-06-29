@@ -40,7 +40,7 @@ class objMap extends gameobj {
     }
 
     move(copter) {
-        console.log('move to ' + copter.center.v1 + ',' + copter.center.v2);
+        //console.log('move to ' + copter.center.v1 + ',' + copter.center.v2);
         this.center.v1 = copter.center.v1;
         this.center.v2 = copter.center.v2;
     }

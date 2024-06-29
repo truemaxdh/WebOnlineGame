@@ -1,7 +1,7 @@
-let x = 150, y = 150, ID, websocket;
+let websocket;
 const Connect = () => {
     const IP = '[[[ip]]]';
-    console.log(ID + "," + IP);
+    //console.log(ID + "," + IP);
 
     websocket = new WebSocket(IP);
     websocket.onopen = (evt) => { onOpen(evt) };
@@ -47,7 +47,7 @@ const onError = (evt) => {
 
 
 const sendStatus = () => {
-    if (typeof ID == 'undefined') ID = document.getElementById("ID").value;
-    let status = "STATUS;ID=" + ID + ";X=" + x + ";Y=" + y;
-    websocket.send(status);
+    //if (typeof ID == 'undefined') ID = document.getElementById("ID").value;
+
+    websocket.send(posDir.getSendStatus());
 }

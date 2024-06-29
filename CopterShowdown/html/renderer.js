@@ -2,6 +2,7 @@ let renderer = {
     canv: null,
     ctx: null,
     map: null,
+    mapSize : 2000,
     
     init: function(container) {
         this.canv = document.getElementById('canv');
@@ -11,7 +12,7 @@ let renderer = {
         this.canv.width = positionInfo.width
         this.canv.height = positionInfo.height;
 
-        this.map = new objMap(1000);
+        this.map = new objMap(this.mapSize);
     },
     render: function (objChain, mainObj) {
         this.map.move(mainObj);

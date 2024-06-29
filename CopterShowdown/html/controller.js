@@ -15,6 +15,7 @@ function addEvt() {
 
     document.body.onkeyup = function( e ) {
         keyCode = '';
+        keyPressed = false;
         rotBlTmr = 0;
         return false;
     }
@@ -27,7 +28,7 @@ function addEvt() {
         user_y = e.clientY * scale_fy;
         user_x_ori = user_x;
         user_y_ori = user_y;
-        console.log(user_x + ',' + user_y);
+        //console.log(user_x + ',' + user_y);
         user_pressing = true;
         return false;
     }

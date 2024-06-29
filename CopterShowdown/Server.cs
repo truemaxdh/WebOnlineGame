@@ -149,6 +149,7 @@ class TcpServer
                     msg += ";ID=" + conn.gamer.ID;
                     msg += ";X=" + conn.gamer.x;
                     msg += ";Y=" + conn.gamer.y;
+                    msg += ";DIR=" + conn.gamer.dir;
                 }
                 foreach (Connection conn in connections)
                 {
@@ -348,6 +349,10 @@ class Connection
                     {
                         gamer.y = int.Parse(val);
                     }
+                    else if (key == "DIR")
+                    {
+                        gamer.dir = val;
+                    }
                     else throw new Exception("key invalid");
                 }
                 tcpServer.StartBroadcast();
@@ -431,6 +436,7 @@ class GamerStatus
     public int x = 0;
     public int y = 0;
     public string ID = "";
+    public string dir = "";
 }
 
 public enum PayloadDataType
