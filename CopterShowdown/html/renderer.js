@@ -3,7 +3,7 @@ let renderer = {
     ctx: null,
     map: null,
     mapSize : 2000,
-    
+    btnShoot: null,
     init: function(container) {
         this.canv = document.getElementById('canv');
         this.ctx = this.canv.getContext('2d');
@@ -13,6 +13,7 @@ let renderer = {
         this.canv.height = positionInfo.height;
 
         this.map = new objMap(this.mapSize);
+        this.btnShoot = new objBtnShoot();
     },
     render: function (objChain, mainObj) {
         this.map.move(mainObj);

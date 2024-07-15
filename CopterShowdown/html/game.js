@@ -89,6 +89,9 @@ function procKeyEvent() {
         case 'ArrowUp':
             posDir.y -= 2;
             break;
+        case 'Space':
+
+            break;
         default:
             keyCode = posDir.dir;
             break;
@@ -112,5 +115,8 @@ function procTouchEvent() {
         else if (dy < -BLOCK_WH) keyCode = 'ArrowUp';
         else if (dx > BLOCK_WH) keyCode = 'ArrowRight';
         else if (dx < -BLOCK_WH) keyCode = 'ArrowLeft';
+
+        if (renderer.btnShoot.center.calcDist(new Vector2D(user_x, user_y)) <= renderer.btnShoot.r)
+            keyCode = 'Space';
     }
 }

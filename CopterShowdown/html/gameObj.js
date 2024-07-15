@@ -132,44 +132,22 @@ class objCopter extends gameobj {
     }
 }
 
-//motionGraphics.movingCopter = function(el) {
-//    let cnv = document.createElement("CANVAS");
-//    cnv.style.position = "relative";
-//    cnv.style.width = el.style.width;
-//    cnv.style.height = el.style.height;
-//    cnv.id = "cnv";
-    
-//    var positionInfo = el.getBoundingClientRect();
-//    cnv.width = positionInfo.width
-//    cnv.height = positionInfo.height;
-//    el.appendChild(cnv);
+class objBtnShoot extends gameobj {
+    constructor() {
+        super(0, 0, 0, 0, 0);
+    }
 
-//    let obj = this.movingCopter;
-//    obj.objName = "movingCopter";
-//    this.runningObj = obj;
-
-//    obj.ctx = cnv.getContext("2d");
-//    obj.w = cnv.width;
-//    obj.h = cnv.height;
-//    obj.lastTimeStamp = null;
-
-//    const map = new objMap(1000);
-//    const copter = new objCopter(map);
-//    obj.drawFrm = function(timeStamp) {
-//        if (!obj.lastTimeStamp) obj.lastTimeStamp = timeStamp;
-//        if ((timeStamp - obj.lastTimeStamp) > 30) {
-//            obj.lastTimeStamp = timeStamp;
-        
-//            map.render(obj.ctx);
-//            copter.render(obj.ctx);
-//            copter.move();
-//            map.move(copter);
-//        }
-    
-//        if (motionGraphics.runningObj.objName == obj.objName) {
-//            requestAnimationFrame(obj.drawFrm);
-//        }
-//    }
-    
-//    requestAnimationFrame(obj.drawFrm);
-//}
+    render(ctx) {
+        const ux = ctx.canvas.width / 10;
+        const uy = ctx.canvas.height / 10;
+        this.center.x = ux * 10;
+        this.center.y = uy * 10;
+        this.r = Math.min(ux, uy);
+        const alphaOri = ctx.globalAlpha;
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = "red";
+        ctx.arc(this.center.x, this.center.y, this.r, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.globalAlpha = alphaOri;
+    }
+}
